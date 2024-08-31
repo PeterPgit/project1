@@ -1,0 +1,5 @@
+Documentation of your code (5 points)
+ This can be in any format you choose, but it should be detailed enough that the GTA and the team who will receive your code for Project 2 can understand what you did.
+ Write it like you would like to receive it from the team whose code you get for Project 2.
+ This documentation should supplement the comments in the code.
+ As we learn about more documentation artifacts during the semester, these documentation requirements will become more specific
