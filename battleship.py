@@ -1,10 +1,10 @@
 '''
 Name: Project 1 - Battleship Game
-Description: 
+Description: Simple Battleship game made in python
 Inputs: 
 Outputs: 
 Collaborators/Sources: 
-{NAMES}
+{Michael Oliver, Peter Pharm, Jack Youngquist, Andrew Uriell, Ian Wilson, ChatGPT}
 Aug 31 2024
 '''
 
@@ -49,30 +49,129 @@ def update_board():
     pass
 
 # Sets up everything needed to run the game
-def game_setup():
-    ships = []
 
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+p1_game_board = [[' ']*10 for _ in range(10)]
+p2_game_board = [[' ']*10 for _ in range(10)]
+x = {'a':0,'b':1,'c':2,'d':3,'e':4,'f':5,'g':6,'h':7,'i':8,'j':9}
+y = [str(num) for num in range(1,11)]
+
+def print_board(game_board):
+    print(BLUE, end='')
+    print(f"{'':<3}| A | B | C | D | E | F | G | H | I | J |")
+    for count, row in enumerate(game_board):
+        print(f'{"-"*45}')
+        string = ''
+        for cell in row:
+            string = string + f' {cell} |'
+        print(f"{count+1:>2} |{string}")
+    print(DEFAULT)
+
+def query_ship_placement(game_board, player):
+    for ship, size in ships:
+        while True:
+            print_board(game_board)
+            print(f'Player {player}, place your {ship} of size {size} [e.g., A1]:')
+            start_pos = input('Enter the starting position:\n').lower()
+            direction = input('Enter direction (H for horizontal, V for vertical):\n').upper()
+
+            horiz_dir = None
+            vert_dir = None
+
+            if direction == 'H':
+                horiz_dir = input('Enter horizontal direction (R for right, L for left):\n').upper()
+            elif direction == 'V':
+                vert_dir = input('Enter vertical direction (U for up, D for down):\n').upper()
+
+            if validate_ship_placement(start_pos, direction, size, game_board, horiz_dir, vert_dir):
+                place_ship(start_pos, direction, size, game_board, horiz_dir, vert_dir)
+                break
+            else:
+                print(f'Invalid placement for {ship}. Try again.')
+
+def game_setup():
+    # Ask for the number of ships
     while True:
-        number_of_ships = input(f'How many ships should be used? (1-5):\n')
         try:
-            number_of_ships = int(number_of_ships)
+            number_of_ships = int(input('How many ships should be used? (1-5):\n'))
+            if 1 <= number_of_ships <= 5:
+                break
+            else:
+                print(f'Please select a valid number of ships between 1 and 5!\n')
         except ValueError:
             print(f'Input must be a valid number!')
-            continue
-        if 1 <= number_of_ships <= 5:
-            break
-        else:
-            print(f'Please select a valid number of ships between 1 and 5!\n')
 
-    for i in range(number_of_ships):
-        ships.append(f'1x{i+1}')
-
+    ship_sizes = {"Liberty": 1, "Destroyer": 2, "Submarine": 3, "Battleship": 4, "Carrier": 5}
+    global ships
+    ships = list(ship_sizes.items())[:number_of_ships]  # Only take the required number of ships
+    
     # Player 1 game board setup
-    for ship in ships:
-        print_board(p1_game_board)
-        print(f'Player 1, place your {ship} ship [A1]:\n')
+    query_ship_placement(p1_game_board, 1)
+
+    clear_screen()
 
     # Player 2 game board setup
+    query_ship_placement(p2_game_board, 2)
+
+def validate_ship_placement(start_pos, direction, size, game_board, horiz_dir, vert_dir):
+    if start_pos[0] in x and start_pos[1:] in y:
+        row = int(start_pos[1:]) - 1  # Convert row number to index (0-based)
+        col = x[start_pos[0]]  # Convert column letter to index
+
+        if direction == 'H':  # Horizontal placement
+            if horiz_dir == 'R':
+                if col + size > 10:  # Out of bounds in column direction
+                    return False
+                for i in range(size):
+                    if game_board[row][col + i] != ' ':  # Check overlap
+                        return False
+            elif horiz_dir == 'L':
+                if col - size + 1 < 0:  # Out of bounds in column direction
+                    return False
+                for i in range(size):
+                    if game_board[row][col - i] != ' ':  # Check overlap
+                        return False
+
+        elif direction == 'V':  # Vertical placement
+            if vert_dir == 'D':
+                if row + size > 10:  # Out of bounds in row direction
+                    return False
+                for i in range(size):
+                    if game_board[row + i][col] != ' ':  # Check overlap
+                        return False
+            elif vert_dir == 'U':
+                if row - size + 1 < 0:  # Out of bounds in row direction
+                    return False
+                for i in range(size):
+                    if game_board[row - i][col] != ' ':  # Check overlap
+                        return False
+
+        return True
+    else:
+        return False
+
+def place_ship(start_pos, direction, size, game_board, horiz_dir, vert_dir):
+    row = int(start_pos[1:]) - 1  # Convert row number to index (0-based)
+    col = x[start_pos[0]]  # Convert column letter to index
+
+    if direction == 'H':  # Horizontal placement
+        if horiz_dir == 'R':
+            for i in range(size):
+                game_board[row][col + i] = 'S'
+        elif horiz_dir == 'L':
+            for i in range(size):
+                game_board[row][col - i] = 'S'
+
+    elif direction == 'V':  # Vertical placement
+        if vert_dir == 'D':
+            for i in range(size):
+                game_board[row + i][col] = 'S'
+        elif vert_dir == 'U':
+            for i in range(size):
+                game_board[row - i][col] = 'S'
+
 
 def run_game():
     while True:
