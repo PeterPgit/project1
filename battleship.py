@@ -29,7 +29,9 @@ def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 p1_game_board = [[' ']*10]*10
+p1_attack_board = [[' ']*10]*10 #track where player one has fired from their pov
 p2_game_board = [[' ']*10]*10
+p2_attack_board = [[' ']*10]*10
 x = {'a':0,'b':1,'c':2,'d':3,'e':4,'f':5,'g':6,'h':7,'i':8,'j':9}
 y = [str(num) for num in range(1,11)]
 
@@ -54,7 +56,9 @@ def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 p1_game_board = [[' ']*10 for _ in range(10)]
+p1_attack_board = [[' ']*10 for _ in range(10)]
 p2_game_board = [[' ']*10 for _ in range(10)]
+p2_attack_board = [[' ']*10 for _ in range(10)]
 x = {'a':0,'b':1,'c':2,'d':3,'e':4,'f':5,'g':6,'h':7,'i':8,'j':9}
 y = [str(num) for num in range(1,11)]
 
@@ -133,6 +137,7 @@ def validate_ship_placement(start_pos, direction, size, game_board, horiz_dir, v
                 for i in range(size):
                     if game_board[row][col - i] != ' ':  # Check overlap
                         return False
+        #need to check for good input
 
         elif direction == 'V':  # Vertical placement
             if vert_dir == 'D':
@@ -176,26 +181,72 @@ def place_ship(start_pos, direction, size, game_board, horiz_dir, vert_dir):
 def run_game():
     while True:
         clear_screen()
+        print(f"{RED}Attack board:{DEFAULT}")
+        print_board(p1_attack_board)
+        print(f"{GREEN}Your board:{DEFAULT}")
         print_board(p1_game_board)
 
         # Player 1 Attacks
         while True:
-            attack_pos = input(f'{RED}Player 1{DEFAULT}: Which cell would you like to attack?):\n')
+            attack_pos = input(f'{RED}Player 1{DEFAULT}: Which cell would you like to attack? [A1]:\n')
             if check_move(attack_pos, p2_game_board):
+                if p2_game_board[x[attack_pos[0].lower()]][int(attack_pos[1:])-1] == 'S':
+                    shot = "Hit!"
+                    p2_game_board[x[attack_pos[0].lower()]][int(attack_pos[1:])-1] = f'{RED}1{BLUE}'
+                    p1_attack_board[x[attack_pos[0].lower()]][int(attack_pos[1:])-1] = f'{RED}1{BLUE}'
+                else:
+                    shot = "Miss"
+                    p2_game_board[x[attack_pos[0].lower()]][int(attack_pos[1:])-1] = f'{RED}0{BLUE}'
+                    p1_attack_board[x[attack_pos[0].lower()]][int(attack_pos[1:])-1] = f'{RED}0{BLUE}'
                 break
+        clear_screen()
+        print(f"{RED}Attack board:{DEFAULT}")
+        print_board(p1_attack_board)
+        print(f"{GREEN}Your board:{DEFAULT}")
+        print_board(p1_game_board)
+        print(shot)
+        end_turn = input("Press Enter to end turn: ")
+        clear_screen()
+        player2_ready = input("Press Enter to begin turn player 2: ")
+        clear_screen()
+        print(f"{RED}Attack board:{DEFAULT}")
+        print_board(p2_attack_board)
+        print(f"{GREEN}Your board:{DEFAULT}")
+        print_board(p2_game_board)
         
         # confirm whether attack was valid and make changes
 
         # Player 2 Attacks
+        while True:
+            attack_pos = input(f'{RED}Player 2{DEFAULT}: Which cell would you like to attack? [A1]:\n')
+            if check_move(attack_pos, p1_game_board):
+                if p1_game_board[x[attack_pos[0].lower()]][int(attack_pos[1:])-1] == 'S':
+                    shot = "Hit!"
+                    p1_game_board[x[attack_pos[0].lower()]][int(attack_pos[1:])-1] = f'{RED}1{BLUE}'
+                    p2_attack_board[x[attack_pos[0].lower()]][int(attack_pos[1:])-1] = f'{RED}1{BLUE}'
+                else:
+                    shot = "Miss"
+                    p1_game_board[x[attack_pos[0].lower()]][int(attack_pos[1:])-1] = f'{RED}0{BLUE}'
+                    p2_attack_board[x[attack_pos[0].lower()]][int(attack_pos[1:])-1] = f'{RED}0{BLUE}'
+                break
+        clear_screen()
+        print(f"{RED}Attack board:{DEFAULT}")
+        print_board(p2_attack_board)
+        print(f"{GREEN}Your board:{DEFAULT}")
+        print_board(p2_game_board)
+        print(shot)
+        end_turn = input("Press Enter to end turn: ")
+        clear_screen()
+        player1_ready = input("Press Enter to begin turn player 1: ")
     
 def check_move(attack_pos, game_board): # returns True if valid move
     if attack_pos[0].lower() in x.keys() and attack_pos[1:] in y:
         # check for already attacked positions
-        if p2_game_board[x[attack_pos[0].lower()]][int(attack_pos[1:])-1] != ' ':
+        if p2_game_board[x[attack_pos[0].lower()]][int(attack_pos[1:])-1] == ' ' or 'S':
+            return True
+        else:
             print(f'Cell has already been attacked!')
             return False
-        else:
-            return True
     else:
         print(f'Please enter a valid cell to attack! [A1]')
         return False
