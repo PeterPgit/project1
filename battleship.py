@@ -10,7 +10,8 @@ Aug 31 2024
 
 '''
 TO ADD:
-- 
+- case checking in ship placement, tracking ships of each player i.e. if one of player 1's ships are destroyed, check for winner, 
+fix bug with attacking where "A2" goes through the grid vertically for "A" then horizontally for "2"
 '''
 
 import os
