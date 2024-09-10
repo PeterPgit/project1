@@ -12,7 +12,6 @@ Aug 31 2024
 TO ADD:
 - case checking in ship placement, tracking ships of each player i.e. if one of player 1's ships are destroyed, check for winner, 
 - bug in attack function where the cell attacked does not always match the input
-- bug where bad input for H or V will crash program
 '''
 
 import os
