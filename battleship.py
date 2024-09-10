@@ -99,6 +99,8 @@ def validate_ship_placement(start_pos, size, game_board, direction=None, horiz_d
                 for i in range(size):
                     if game_board[row][col - i] != ' ':  # Check overlap
                         return False
+            elif horiz_dir != 'r' and horiz_dir != 'l': # Check for bad input. If there is bad input, reprompt user
+                return False
             return True
         #need to check for good input
 
@@ -115,6 +117,8 @@ def validate_ship_placement(start_pos, size, game_board, direction=None, horiz_d
                 for i in range(size):
                     if game_board[row - i][col] != ' ':  # Check overlap
                         return False
+            elif vert_dir == 'd' and vert_dir == 'u': # Check for bad input. If there is bad input, reprompt user
+                return False
             return True
         
         # Ships of size 1
