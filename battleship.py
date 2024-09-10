@@ -29,6 +29,9 @@ p2_attack_board = [[' ']*10 for _ in range(10)]
 x = {'a':0,'b':1,'c':2,'d':3,'e':4,'f':5,'g':6,'h':7,'i':8,'j':9}
 y = [str(num) for num in range(1,11)]
 
+p1_ships = {} # Dictionary to store Player 1 ships
+p2_ships = {} # Disctionary to store Player 2 ships
+
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -52,7 +55,8 @@ def print_full_board(game_board, attack_board):
 def update_board():
     pass
 
-def query_ship_placement(game_board, player):
+# Parameters: The players board, which player is being reffered to, the disctionary of that players ships
+def query_ship_placement(game_board, player, player_ships):
     for ship, size in ships:
         while True:
             print_single_board(game_board)
@@ -72,13 +76,13 @@ def query_ship_placement(game_board, player):
                     continue
                 
                 if validate_ship_placement(start_pos, size, game_board, direction, horiz_dir, vert_dir):
-                    place_ship(start_pos, size, game_board, direction, horiz_dir, vert_dir)
+                    place_ship(start_pos, size, game_board, player_ships, ship, direction, horiz_dir, vert_dir)
                     break
                 else:
                     print(f'Invalid placement for {ship}. Try again.')
             else:
                 if validate_ship_placement(start_pos, size, game_board):
-                    place_ship(start_pos, size, game_board)
+                    place_ship(start_pos, size, game_board, player_ships, ship)
                     break
                 else:
                     print(f'Invalid placement for {ship}. Try again.')
@@ -131,29 +135,47 @@ def validate_ship_placement(start_pos, size, game_board, direction=None, horiz_d
     else:
         return False
 
-def place_ship(start_pos, size, game_board, direction=None, horiz_dir=None, vert_dir=None):
+def place_ship(start_pos, size, game_board, player_ships, ship_name,  direction=None, horiz_dir=None, vert_dir=None):
     col = x[start_pos[0]]  # Convert column letter to index
     row = int(start_pos[1:]) - 1  # Convert row number to index (0-based)
+    coordinates = [] # Holds the ships coordinates
 
     if direction == 'h':  # Horizontal placement
         if horiz_dir == 'r':
             for i in range(size):
                 game_board[row][col + i] = 'S'
+                coordinates.append((row, col + i)) # Track the ships position
         elif horiz_dir == 'l':
             for i in range(size):
                 game_board[row][col - i] = 'S'
+                coordinates.append((row, col - i)) # Track the ships position
 
     elif direction == 'v':  # Vertical placement
         if vert_dir == 'd':
             for i in range(size):
                 game_board[row + i][col] = 'S'
+                coordinates.append((row + i, col)) # Track the ships position
         elif vert_dir == 'u':
             for i in range(size):
                 game_board[row - i][col] = 'S'
+                coordinates.append((row - i, col)) # Track the ships position
 
     # ships of size 1
     elif direction == None:
         game_board[row][col] = 'S'
+        coordinates.append((row, col)) # Track the ships position
+
+    player_ships[ship_name] = coordinates # Add the coordinates of the ships to the players ship dictionary
+
+# Check to see if a players ship is destoryed
+def check_ship_destroyed(player_ships, game_board):
+    for ship, positions in player_ships.items():
+        destroyed = all(game_board[row][col] == f'{RED}X{BLUE}' for row, col in positions)
+        if destroyed:
+            print(f"{RED}{ship} has been destroyed!{DEFAULT}")
+            del player_ships[ship]
+            break
+
 
 def check_attack(attack_pos, game_board): # returns True if valid move
     if attack_pos[0] in x and attack_pos[1:] in y:
@@ -168,6 +190,12 @@ def check_attack(attack_pos, game_board): # returns True if valid move
     else:
         print(f'Please enter a valid cell to attack! [A1]')
         return False
+
+# Check if a player has won the game
+def check_winner(player_ships):
+    if len(player_ships) == 0:
+        return True
+    return False
 
 def game_setup():
     # Ask for the number of ships
@@ -185,12 +213,12 @@ def game_setup():
     global ships
     ships = list(ship_sizes.items())[:number_of_ships]  # Only take the required number of ships
     
-    # Player 1 game board setup
-    query_ship_placement(p1_game_board, 1)
+    # Player 1 game board setup, parameters: players board, which player, players set of ships
+    query_ship_placement(p1_game_board, 1, p1_ships)
     clear_screen()
 
-    # Player 2 game board setup
-    query_ship_placement(p2_game_board, 2)
+    # Player 2 game board setup, parameters: players board, which player, players set of ships
+    query_ship_placement(p2_game_board, 2, p2_ships)
 
 def run_game():
     while True:
@@ -210,6 +238,7 @@ def run_game():
                     shot = "Hit!"
                     p2_game_board[attack_row][attack_col] = f'{RED}X{BLUE}'
                     p1_attack_board[attack_row][attack_col] = f'{RED}X{BLUE}'
+                    check_ship_destroyed(p2_ships, p2_game_board)
                 else:
                     shot = "Miss"
                     p2_game_board[attack_row][attack_col] = f'{RED}O{BLUE}'
@@ -222,6 +251,13 @@ def run_game():
         print_single_board(p1_game_board)
         print(shot)
         input("Press enter to end turn: ")
+        # Check if either player has won
+        if check_winner(p2_ships):
+            print(f"Player 1 Wins:{DEFAULT}\n")
+            break
+        elif check_winner(p1_ships):
+            print(f"Player 2 Wins:{DEFAULT}\n")
+            break
         clear_screen()
         input("Press enter to begin turn player 2: ")
         clear_screen()
@@ -240,6 +276,7 @@ def run_game():
                     shot = "Hit!"
                     p1_game_board[attack_row][attack_col] = f'{RED}X{BLUE}'
                     p2_attack_board[attack_row][attack_col] = f'{RED}X{BLUE}'
+                    check_ship_destroyed(p1_ships, p1_game_board)
                 else:
                     shot = "Miss"
                     p1_game_board[attack_row][attack_col] = f'{RED}O{BLUE}'
@@ -252,6 +289,13 @@ def run_game():
         print_single_board(p2_game_board)
         print(shot)
         end_turn = input("Press Enter to end turn: ")
+        # Check if either player has won
+        if check_winner(p2_ships):
+            print(f"Player 1 Wins:{DEFAULT}\n")
+            break
+        elif check_winner(p1_ships):
+            print(f"Player 2 Wins:{DEFAULT}\n")
+            break
         clear_screen()
         player1_ready = input("Press Enter to begin turn player 1: ")
 
