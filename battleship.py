@@ -12,6 +12,7 @@ Aug 31 2024
 TO ADD:
 - case checking in ship placement, tracking ships of each player i.e. if one of player 1's ships are destroyed, check for winner, 
 - bug in attack function where the cell attacked does not always match the input
+- bug where bad input for H or V will crash program
 '''
 
 import os
@@ -67,7 +68,8 @@ def query_ship_placement(game_board, player):
                     horiz_dir = None
                     vert_dir = input('Enter vertical direction (U for up, D for down):\n').lower()
                 else:
-                    raise BaseException
+                    print(f"Invalid direction input! Please enter 'H' for horizontal or 'V' for vertical.") # If invalid input, reprompt
+                    continue
                 
                 if validate_ship_placement(start_pos, size, game_board, direction, horiz_dir, vert_dir):
                     place_ship(start_pos, size, game_board, direction, horiz_dir, vert_dir)
@@ -219,9 +221,9 @@ def run_game():
         print(f"{GREEN}Your board:{DEFAULT}")
         print_single_board(p1_game_board)
         print(shot)
-        input("Press any key to end turn: ")
+        input("Press enter to end turn: ")
         clear_screen()
-        input("Press any key to begin turn player 2: ")
+        input("Press enter to begin turn player 2: ")
         clear_screen()
         print(f"{RED}Attack board:{DEFAULT}")
         print_single_board(p2_attack_board)
