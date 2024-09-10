@@ -11,7 +11,6 @@ Aug 31 2024
 '''
 TO ADD:
 - case checking in ship placement, tracking ships of each player i.e. if one of player 1's ships are destroyed, check for winner, 
-- bug in attack function where the cell attacked does not always match the input
 '''
 
 import os
@@ -34,14 +33,16 @@ def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 def print_single_board(game_board):
-    print(BLUE, end='')
-    print(f"{'':<3}| A | B | C | D | E | F | G | H | I | J |")
+    print(f"{'':<3}{BLUE}| ",end='')
+    for letter in 'ABCDEFGHIJ':
+        print(f'{YELLOW}{letter}{BLUE} | ',end='')
+    print('')
     for count, row in enumerate(game_board):
         print(f'{"-"*45}')
         string = ''
         for cell in row:
             string = string + f' {cell} |'
-        print(f"{count+1:>2} |{string}")
+        print(f"{YELLOW}{count+1:>2}{BLUE} |{string}")
     print(DEFAULT)
 
 def print_full_board(game_board, attack_board):
@@ -194,9 +195,9 @@ def game_setup():
 def run_game():
     while True:
         clear_screen()
-        print(f"{RED}Attack board:{DEFAULT}")
+        print(f"{RED}Attack board:{DEFAULT}\n")
         print_single_board(p1_attack_board)
-        print(f"{GREEN}Your board:{DEFAULT}")
+        print(f"{GREEN}Your board:{DEFAULT}\n")
         print_single_board(p1_game_board)
 
         # Player 1 Attacks
@@ -211,13 +212,13 @@ def run_game():
                     p1_attack_board[attack_row][attack_col] = f'{RED}X{BLUE}'
                 else:
                     shot = "Miss"
-                    p2_game_board[attack_row][attack_row] = f'{RED}O{BLUE}'
-                    p1_attack_board[attack_row][attack_row] = f'{RED}O{BLUE}'
+                    p2_game_board[attack_row][attack_col] = f'{RED}O{BLUE}'
+                    p1_attack_board[attack_row][attack_col] = f'{RED}O{BLUE}'
                 break
         clear_screen()
-        print(f"{RED}Attack board:{DEFAULT}")
+        print(f"{RED}Attack board:{DEFAULT}\n")
         print_single_board(p1_attack_board)
-        print(f"{GREEN}Your board:{DEFAULT}")
+        print(f"{GREEN}Your board:{DEFAULT}\n")
         print_single_board(p1_game_board)
         print(shot)
         input("Press enter to end turn: ")
@@ -229,8 +230,6 @@ def run_game():
         print(f"{GREEN}Your board:{DEFAULT}")
         print_single_board(p2_game_board)
         
-        # confirm whether attack was valid and make changes
-
         # Player 2 Attacks
         while True:
             attack_pos = input(f'{RED}Player 2{DEFAULT}: Which cell would you like to attack? [A1]:\n').lower()

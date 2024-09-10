@@ -1,5 +1,5 @@
-Estimate of total person hours:
-Reasoning:
+Estimate of total person hours: 10
+Reasoning: Rough estimate that each person will spend two hours on the project such as working on the code, running test cases, or fixing bugs.
 
 -----------------------------------------------
 Actual person hours:
