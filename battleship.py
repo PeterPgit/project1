@@ -68,7 +68,8 @@ def query_ship_placement(game_board, player):
                     horiz_dir = None
                     vert_dir = input('Enter vertical direction (U for up, D for down):\n').lower()
                 else:
-                    raise BaseException
+                    print(f"Invalid direction input! Please enter 'H' for horizontal or 'V' for vertical.") # If invalid input, reprompt
+                    continue
                 
                 if validate_ship_placement(start_pos, size, game_board, direction, horiz_dir, vert_dir):
                     place_ship(start_pos, size, game_board, direction, horiz_dir, vert_dir)
@@ -100,6 +101,8 @@ def validate_ship_placement(start_pos, size, game_board, direction=None, horiz_d
                 for i in range(size):
                     if game_board[row][col - i] != ' ':  # Check overlap
                         return False
+            elif horiz_dir != 'r' and horiz_dir != 'l': # Check for bad input. If there is bad input, reprompt user
+                return False
             return True
         #need to check for good input
 
@@ -116,6 +119,8 @@ def validate_ship_placement(start_pos, size, game_board, direction=None, horiz_d
                 for i in range(size):
                     if game_board[row - i][col] != ' ':  # Check overlap
                         return False
+            elif vert_dir == 'd' and vert_dir == 'u': # Check for bad input. If there is bad input, reprompt user
+                return False
             return True
         
         # Ships of size 1
@@ -216,9 +221,9 @@ def run_game():
         print(f"{GREEN}Your board:{DEFAULT}\n")
         print_single_board(p1_game_board)
         print(shot)
-        input("Press any key to end turn: ")
+        input("Press enter to end turn: ")
         clear_screen()
-        input("Press any key to begin turn player 2: ")
+        input("Press enter to begin turn player 2: ")
         clear_screen()
         print(f"{RED}Attack board:{DEFAULT}")
         print_single_board(p2_attack_board)
