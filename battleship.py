@@ -10,7 +10,7 @@ Aug 31 2024
 
 '''
 TO ADD:
-- case checking in ship placement, tracking ships of each player i.e. if one of player 1's ships are destroyed, check for winner, 
+
 '''
 
 import os
@@ -30,7 +30,7 @@ x = {'a':0,'b':1,'c':2,'d':3,'e':4,'f':5,'g':6,'h':7,'i':8,'j':9}
 y = [str(num) for num in range(1,11)]
 
 p1_ships = {} # Dictionary to store Player 1 ships
-p2_ships = {} # Disctionary to store Player 2 ships
+p2_ships = {} # Dictionary to store Player 2 ships
 
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -51,11 +51,8 @@ def print_single_board(game_board):
 def print_full_board(game_board, attack_board):
     pass
 
-# some function to update the board
-def update_board():
-    pass
-
 # Parameters: The players board, which player is being reffered to, the disctionary of that players ships
+# ChatGPT was used to split one ship placement function into two separate fundtions to query and validate ship placement.
 def query_ship_placement(game_board, player, player_ships):
     for ship, size in ships:
         while True:
@@ -176,13 +173,12 @@ def check_ship_destroyed(player_ships, game_board):
             del player_ships[ship]
             break
 
-
 def check_attack(attack_pos, game_board): # returns True if valid move
     if attack_pos[0] in x and attack_pos[1:] in y:
         attack_col = x[attack_pos[0]]
         attack_row = int(attack_pos[1:]) - 1
         # check for already attacked positions
-        if game_board[attack_row][attack_col] == ' ' or 'S':
+        if game_board[attack_row][attack_col] in (' ', 'S'):
             return True
         else:
             print(f'Cell has already been attacked!')
@@ -231,6 +227,9 @@ def run_game():
         # Player 1 Attacks
         while True:
             attack_pos = input(f'{RED}Player 1{DEFAULT}: Which cell would you like to attack? [A1]:\n').lower()
+            if attack_pos[0] not in x or  attack_pos[1:] not in y:
+                print(f'Please enter a valid cell!')
+                continue
             attack_col = x[attack_pos[0]]
             attack_row = int(attack_pos[1:]) - 1
             if check_attack(attack_pos, p2_game_board):
@@ -251,6 +250,7 @@ def run_game():
         print_single_board(p1_game_board)
         print(shot)
         input("Press enter to end turn: ")
+        
         # Check if either player has won
         if check_winner(p2_ships):
             print(f"Player 1 Wins:{DEFAULT}\n")
@@ -269,6 +269,9 @@ def run_game():
         # Player 2 Attacks
         while True:
             attack_pos = input(f'{RED}Player 2{DEFAULT}: Which cell would you like to attack? [A1]:\n').lower()
+            if attack_pos[0] not in x or  attack_pos[1:] not in y:
+                print(f'Please enter a valid cell!')
+                continue
             attack_col = x[attack_pos[0]]
             attack_row = int(attack_pos[1:]) - 1
             if check_attack(attack_pos, p1_game_board):
@@ -288,7 +291,7 @@ def run_game():
         print(f"{GREEN}Your board:{DEFAULT}")
         print_single_board(p2_game_board)
         print(shot)
-        end_turn = input("Press Enter to end turn: ")
+        input("Press Enter to end turn: ")
         # Check if either player has won
         if check_winner(p2_ships):
             print(f"Player 1 Wins:{DEFAULT}\n")
@@ -297,7 +300,7 @@ def run_game():
             print(f"Player 2 Wins:{DEFAULT}\n")
             break
         clear_screen()
-        player1_ready = input("Press Enter to begin turn player 1: ")
+        input("Press Enter to begin turn player 1: ")
 
 def main():
     game_setup()
