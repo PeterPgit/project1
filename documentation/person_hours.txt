@@ -4,4 +4,8 @@ Reasoning: Rough estimate that each person will spend two hours on the project s
 -----------------------------------------------
 Actual person hours:
 
-Peter Pham: 3.5
+Peter Pham:       3.5
+Ian Wilson:       2
+Andrew Uriell:    2
+Michael Oliver:   2
+Jack Youngquist:  2

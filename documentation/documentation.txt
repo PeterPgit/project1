@@ -1,5 +1,92 @@
-Documentation of your code (5 points)
- This can be in any format you choose, but it should be detailed enough that the GTA and the team who will receive your code for Project 2 can understand what you did.
- Write it like you would like to receive it from the team whose code you get for Project 2.
- This documentation should supplement the comments in the code.
- As we learn about more documentation artifacts during the semester, these documentation requirements will become more specific
+clear_screen()
+Purpose: Clears the terminal screen between turns to keep the game interface clean.
+
+Functionality: It detects the operating system (Windows or Unix-based) and runs the appropriate 
+command to clear the screen (cls for Windows, clear for Unix).
+
+
+
+print_single_board(game_board)
+Purpose: Displays a single player’s game board in a structured format with labeled rows and columns.
+
+Functionality: Formats and prints the board, using color codes to differentiate between cells that contain ships, hits, 
+or misses. The column labels (A-J) and row labels (1-10) make it easy for players to visualize the board.
+
+
+
+print_full_board(game_board, attack_board)
+Purpose: This function prints both the player's attack board and game board side by side. The attack board shows the player's 
+previous guesses (hits or misses), while the game board displays the player's own ships, hits, and misses. 
+
+Functionality:
+Headers: It first prints two headers, labeling the attack board on the left and the player’s own board on the right. The headers
+use color coding to distinguish different board sections.
+
+Column Labels: Both boards have labeled columns (A-J) for easy reference when selecting grid coordinates. This ensures 
+that players can quickly identify specific grid positions.
+
+Grid Rows: Each row is printed with corresponding labels (1-10) on the left, and each cell in the row shows either a ship (S), 
+a hit (X), a miss (O), or an empty space.
+
+Row Separators: Each row of the grid is separated by a dashed line to improve readability, making it clear where one row ends 
+and the next begins.
+
+Color Coding: Uses ANSI color codes to distinguish different game elements (e.g., hits, misses, empty cells). This helps 
+players visually understand the current game state.
+
+Parameters:
+game_board: The player's own board, showing the positions of their ships as well as any hits or misses they have taken.
+attack_board: The player's attack board, showing where they have guessed on the opponent's board and whether those guesses were hits or misses.
+
+
+
+query_ship_placement(game_board, player, player_ships)
+Purpose: Handles ship placement by prompting the player for coordinates and validating the input.
+
+Functionality: Prompts the player to enter the starting position of each ship and 
+specify the direction (horizontal or vertical). The function checks for valid positions, ensuring the ship fits 
+on the board without overlapping other ships. If the input is invalid, the player is asked to re-enter their choice.
+
+Parameters: 
+game_board: The board on which the player will place ships.
+player: The player number (1 or 2).
+player_ships: A dictionary storing the player's ships and their positions.
+
+
+
+validate_ship_placement(game_board, start_pos, direction, size)
+Purpose: Validates that a ship can be placed at the specified starting position and direction.
+
+Functionality: Checks if the ship fits on the board and does not overlap any existing ships. If the 
+position is invalid (e.g., out of bounds or overlapping), it returns False, prompting the player to select a new position.
+
+
+
+place_ship_on_board(game_board, start_pos, direction, size)
+Purpose: Places a ship on the board at the specified position and direction.
+
+Functionality: Marks the ship's position on the board in the correct orientation (either horizontal or vertical). 
+This function updates the board with the ship's placement after validation.
+
+
+
+attack(player, opponent_board)
+Purpose: Manages the player's attack on the opponent’s game board.
+
+Functionality: Prompts the attacking player to input coordinates for an attack. The function checks whether the 
+attack is a hit or miss and updates both the player's attack board and the opponent's game board accordingly. 
+The game then moves to the next player's turn.
+
+Parameters:
+player: The current player making the attack.
+opponent_board: The opponent's board that is being attacked.
+
+
+
+check_victory(opponent_ships)
+Purpose: Checks if all of the opponent's ships have been sunk.
+
+Functionality: Iterates through the opponent's ships to see if any remain afloat. If all ships are destroyed, 
+it returns True, indicating that the attacking player has won the game. If not, the game continues.
+
+
