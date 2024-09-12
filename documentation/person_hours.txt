@@ -4,4 +4,4 @@ Reasoning: Rough estimate that each person will spend two hours on the project s
 -----------------------------------------------
 Actual person hours:
 
-Peter Pham: 3
+Peter Pham: 3.5
