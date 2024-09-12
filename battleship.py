@@ -52,11 +52,11 @@ def print_single_board(game_board):
 
 def print_full_board(game_board, attack_board):
     print(f'{RED}Attack board:{DEFAULT}\t\t\t\t\t\t{GREEN}Your board:{DEFAULT}\n')
-    string = f'{'':<3}{BLUE}| '
+    string = f'{{"":<3}}{BLUE}| '
     for letter in 'ABCDEFGHIJ':
         string += (f'{YELLOW}{letter}{BLUE} | ')
     string += '\t\t'
-    string += f'{'':<3}{BLUE}| '
+    string = f'{{"":<3}}{BLUE}| '
     for letter in 'ABCDEFGHIJ':
         string += (f'{YELLOW}{letter}{BLUE} | ')
     string += '\n'
