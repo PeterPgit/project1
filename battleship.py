@@ -42,16 +42,40 @@ def print_single_board(game_board):
     for letter in 'ABCDEFGHIJ':
         print(f'{YELLOW}{letter}{BLUE} | ',end='')
     print('')
-    for count, row in enumerate(game_board):
+    for index, row in enumerate(game_board):
         print(f'{"-"*45}')
         string = ''
         for cell in row:
             string = string + f' {cell} |'
-        print(f"{YELLOW}{count+1:>2}{BLUE} |{string}")
+        print(f"{YELLOW}{index+1:>2}{BLUE} |{string}")
     print(DEFAULT)
 
 def print_full_board(game_board, attack_board):
-    pass
+    print(f'{RED}Attack board:{DEFAULT}\t\t\t\t\t\t{GREEN}Your board:{DEFAULT}\n')
+    string = f'{'':<3}{BLUE}| '
+    for letter in 'ABCDEFGHIJ':
+        string += (f'{YELLOW}{letter}{BLUE} | ')
+    string += '\t\t'
+    string += f'{'':<3}{BLUE}| '
+    for letter in 'ABCDEFGHIJ':
+        string += (f'{YELLOW}{letter}{BLUE} | ')
+    string += '\n'
+
+
+    for index, (game_board_row, attack_board_row) in enumerate(zip(game_board, attack_board)):
+        string += f'{"-"*45}\t\t{"-"*45}\n'
+
+        cell_row = ''
+        for cell_value in game_board_row:
+            cell_row = cell_row + f' {cell_value} |'
+        string += f'{YELLOW}{index+1:>2}{BLUE} |{cell_row}\t\t'
+
+        cell_row = ''
+        for cell_value in attack_board_row:
+            cell_row = cell_row + f' {cell_value} |'
+        string += f'{YELLOW}{index+1:>2}{BLUE} |{cell_row}\n'
+
+    print(string, end=f'{DEFAULT}\n')
 
 # Parameters: The players board, which player is being reffered to, the disctionary of that players ships
 # ChatGPT was used to split one ship placement function into two separate fundtions to query and validate ship placement.
@@ -221,10 +245,7 @@ def game_setup():
 def run_game():
     while True:
         clear_screen()
-        print(f"{RED}Attack board:{DEFAULT}\n")
-        print_single_board(p1_attack_board)
-        print(f"{GREEN}Your board:{DEFAULT}\n")
-        print_single_board(p1_game_board)
+        print_full_board(p1_attack_board, p1_game_board)
 
         # Player 1 Attacks
         while True:
@@ -246,27 +267,21 @@ def run_game():
                     p1_attack_board[attack_row][attack_col] = f'{RED}O{BLUE}'
                 break
         clear_screen()
-        print(f"{RED}Attack board:{DEFAULT}\n")
-        print_single_board(p1_attack_board)
-        print(f"{GREEN}Your board:{DEFAULT}\n")
-        print_single_board(p1_game_board)
+        print_full_board(p1_attack_board, p1_game_board)
         print(shot)
         input("Press enter to end turn: ")
         
         # Check if either player has won
         if check_winner(p2_ships):
-            print(f"Player 1 Wins:{DEFAULT}\n")
+            print(f"Player 1 Wins!{DEFAULT}\n")
             break
         elif check_winner(p1_ships):
-            print(f"Player 2 Wins:{DEFAULT}\n")
+            print(f"Player 2 Wins!{DEFAULT}\n")
             break
         clear_screen()
         input("Press enter to begin turn player 2: ")
         clear_screen()
-        print(f"{RED}Attack board:{DEFAULT}")
-        print_single_board(p2_attack_board)
-        print(f"{GREEN}Your board:{DEFAULT}")
-        print_single_board(p2_game_board)
+        print_full_board(p2_attack_board, p2_game_board)
         
         # Player 2 Attacks
         while True:
@@ -288,18 +303,15 @@ def run_game():
                     p2_attack_board[attack_row][attack_col] = f'{RED}O{BLUE}'
                 break
         clear_screen()
-        print(f"{RED}Attack board:{DEFAULT}")
-        print_single_board(p2_attack_board)
-        print(f"{GREEN}Your board:{DEFAULT}")
-        print_single_board(p2_game_board)
+        print_full_board(p2_attack_board, p2_game_board)
         print(shot)
         input("Press Enter to end turn: ")
         # Check if either player has won
         if check_winner(p2_ships):
-            print(f"Player 1 Wins:{DEFAULT}\n")
+            print(f"Player 1 Wins!{DEFAULT}\n")
             break
         elif check_winner(p1_ships):
-            print(f"Player 2 Wins:{DEFAULT}\n")
+            print(f"Player 2 Wins!{DEFAULT}\n")
             break
         clear_screen()
         input("Press Enter to begin turn player 1: ")
