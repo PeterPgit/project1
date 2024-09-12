@@ -1,8 +1,10 @@
 '''
 Name: Project 1 - Battleship Game
 Description: Simple Battleship game made in python
-Inputs: 
-Outputs: 
+Inputs: Players provide coordinates for ship placement and attacks (e.g., A1 for column A and row 1). For ships 
+longer than one grid space, players specify a direction (H for horizontal, V for vertical).
+Outputs: The game board is updated and displayed after each turn, showing hits, misses, and the 
+positions of the player's ships.
 Collaborators/Sources: 
 Michael Oliver, Peter Pham, Jack Youngquist, Andrew Uriell, Ian Wilson, ChatGPT
 Aug 31 2024
