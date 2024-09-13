@@ -9,12 +9,6 @@ Collaborators/Sources:
 Michael Oliver, Peter Pham, Jack Youngquist, Andrew Uriell, Ian Wilson, ChatGPT
 Aug 31 2024
 '''
-
-'''
-TO ADD:
-
-'''
-
 import os
 
 # ANSI Coloring for text
@@ -24,18 +18,23 @@ YELLOW = '\033[93m'
 BLUE = '\033[94m'
 DEFAULT = '\033[0m'
 
-p1_game_board = [[' ']*10 for _ in range(10)]
+# tracks respective player's attacks and current board using a 2D list
+p1_game_board = [[' ']*10 for _ in range(10)] # track player's board incuding ship placement and enemy attacks
 p1_attack_board = [[' ']*10 for _ in range(10)] #track where player one has fired from their pov
 p2_game_board = [[' ']*10 for _ in range(10)]
 p2_attack_board = [[' ']*10 for _ in range(10)]
+
+# x and y axis for accessing the game boards
 x = {'a':0,'b':1,'c':2,'d':3,'e':4,'f':5,'g':6,'h':7,'i':8,'j':9}
 y = [str(num) for num in range(1,11)]
 
 p1_ships = {} # Dictionary to store Player 1 ships
 p2_ships = {} # Dictionary to store Player 2 ships
 
+# system function to clear the terminal
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
+
 
 def print_single_board(game_board):
     print(f"{'':<3}{BLUE}| ",end='')
@@ -52,11 +51,11 @@ def print_single_board(game_board):
 
 def print_full_board(game_board, attack_board):
     print(f'{RED}Attack board:{DEFAULT}\t\t\t\t\t\t{GREEN}Your board:{DEFAULT}\n')
-    string = f'{{"":<3}}{BLUE}| '
+    string = f'{"":<3}{BLUE}| '
     for letter in 'ABCDEFGHIJ':
         string += (f'{YELLOW}{letter}{BLUE} | ')
     string += '\t\t'
-    string = f'{{"":<3}}{BLUE}| '
+    string += f'{"":<3}{BLUE}| '
     for letter in 'ABCDEFGHIJ':
         string += (f'{YELLOW}{letter}{BLUE} | ')
     string += '\n'
